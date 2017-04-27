@@ -51,7 +51,7 @@ class MySqlRepository extends AbstractMetricRepository implements MetricInterfac
     public function getPointsSinceHour(Metric $metric, $hour)
     {
         $queryType = $this->getQueryType($metric);
-        $points = DB::select("SELECT DATE_FORMAT({$this->getMetricPointsTable()}.`created_at`, '%H:00') AS `key`, {$queryType} FROM {$this->getMetricsTable()} INNER JOIN {$this->getMetricPointsTable()} ON {$this->getMetricsTable()}.id = {$this->getMetricPointsTable()}.metric_id WHERE {$this->getMetricsTable()}.id = :metricId AND {$this->getMetricPointsTable()}.`created_at` >= DATE_SUB(NOW(), INTERVAL :hour HOUR) GROUP BY HOUR({$this->getMetricPointsTable()}.`created_at`) ORDER BY {$this->getMetricPointsTable()}.`created_at`", [
+        $points = DB::select("SELECT DATE_FORMAT({$this->getMetricPointsTable()}.`created_at`, '%H:00') AS `key`, {$queryType} FROM {$this->getMetricsTable()} INNER JOIN {$this->getMetricPointsTable()} ON {$this->getMetricsTable()}.id = {$this->getMetricPointsTable()}.metric_id WHERE {$this->getMetricsTable()}.id = :metricId AND {$this->getMetricPointsTable()}.`created_at` >= GREATEST(CURRENT_DATE, DATE_SUB(NOW(), INTERVAL :hour HOUR)) GROUP BY HOUR({$this->getMetricPointsTable()}.`created_at`) ORDER BY {$this->getMetricPointsTable()}.`created_at`", [
             'metricId' => $metric->id,
             'hour'     => $hour,
         ]);
