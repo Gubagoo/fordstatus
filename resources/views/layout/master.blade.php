@@ -29,11 +29,11 @@
     <meta name="msapplication-TileImage" content="{{ asset('/img/favicon.png') }}" />
 
     @if (isset($favicon))
-    <link rel="icon" type="image/png" href="/img/{{ $favicon }}.ico">
-    <link rel="shortcut icon" href="/img/{{ $favicon }}.png" type="image/x-icon">
+    <link rel="icon" href="{{ asset("/img/{$favicon}.ico") }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset("/img/{$favicon}.png") }}" type="image/png">
     @else
-    <link rel="icon" type="image/png" href="/img/favicon.ico">
-    <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon">
+    <link rel="icon" href="{{ asset('/img/favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('/img/favicon.png') }}" type="image/png">
     @endif
 
     <link rel="apple-touch-icon" href="{{ asset('/img/apple-touch-icon.png') }}">
@@ -44,12 +44,12 @@
     <link rel="apple-touch-icon" sizes="144x144" href="{{ asset('/img/apple-touch-icon-144x144.png') }}">
     <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('/img/apple-touch-icon-152x152.png') }}">
 
-    <title>{{ $site_title }}</title>
+    <title>@yield('title', $site_title)</title>
 
     @if($enable_external_dependencies)
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&subset={{ $font_subset }}" rel="stylesheet" type="text/css">
     @endif
-    <link rel="stylesheet" href="{{ elixir('dist/css/app.css') }}">
+    <link rel="stylesheet" href="{{ mix('dist/css/app.css') }}">
 
     @include('partials.stylesheet')
 
@@ -63,19 +63,32 @@
 
     <script type="text/javascript">
         var Global = {};
+
+        var refreshRate = parseInt("{{ $app_refresh_rate }}");
+
+        function refresh() {
+                window.location.reload(true);
+        }
+
+        if(refreshRate > 0) {
+                setTimeout(refresh, refreshRate * 1000);
+        }
+
         Global.locale = '{{ $app_locale }}';
     </script>
-    <script src="{{ elixir('dist/js/all.js') }}"></script>
+    <script src="{{ mix('dist/js/manifest.js') }}"></script>
+    <script src="{{ mix('dist/js/vendor.js') }}"></script>
 </head>
 <body class="status-page @yield('bodyClass')">
     @yield('outer-content')
 
     @include('partials.banner')
 
-    <div class="container">
+    <div class="container" id="app">
         @yield('content')
     </div>
 
-    @include('partials.footer')
+    @yield('bottom-content')
 </body>
+<script src="{{ mix('dist/js/all.js') }}"></script>
 </html>

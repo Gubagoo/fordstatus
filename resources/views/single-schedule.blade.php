@@ -1,5 +1,7 @@
 @extends('layout.master')
 
+@section('title', $schedule->name.' | '.$site_title)
+
 @section('bodyClass', 'no-padding')
 
 @section('outer-content')
@@ -32,4 +34,8 @@
         </div>
     </div>
 </div>
+@stop
+
+@section('bottom-content')
+@include('partials.footer')
 @stop

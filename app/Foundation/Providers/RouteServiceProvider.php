@@ -89,7 +89,10 @@ class RouteServiceProvider extends ServiceProvider
         $router->group(['namespace' => $this->namespace, 'as' => 'core::'], function (Router $router) {
             $path = app_path('Http/Routes');
 
-            foreach (glob("{$path}/*{,/*}.php", GLOB_BRACE) as $file) {
+            $AllFileIterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
+            $PhpFileIterator = new \RegexIterator($AllFileIterator, '/^.+\.php$/i', \RecursiveRegexIterator::GET_MATCH);
+
+            foreach ($PhpFileIterator as $file => $object) {
                 $class = substr($file, strlen($path));
                 $class = str_replace('/', '\\', $class);
                 $class = substr($class, 0, -4);

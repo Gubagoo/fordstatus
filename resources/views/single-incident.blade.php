@@ -1,5 +1,7 @@
 @extends('layout.master')
 
+@section('title', $incident->name.' | '.$site_title)
+
 @section('bodyClass', 'no-padding')
 
 @section('outer-content')
@@ -42,4 +44,8 @@
     </div>
 </div>
 @endif
+@stop
+
+@section('bottom-content')
+@include('partials.footer')
 @stop
