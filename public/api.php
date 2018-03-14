@@ -1,5 +1,5 @@
 <?php
-if (!in_array($_SERVER['REMOTE_ADDR'], gethostbynamel("cron.gubagoo.io"))) {
+if (!in_array($_SERVER['REMOTE_ADDR'], [gethostbyname("servers02.gubagoo.io"), gethostbyname("servers01.gubagoo.io")])) {
 	exit();
 }
 
