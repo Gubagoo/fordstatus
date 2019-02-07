@@ -1,17 +1,22 @@
 <?php
 if (!in_array($_SERVER['REMOTE_ADDR'], [gethostbyname("servers02.gubagoo.io"), gethostbyname("servers01.gubagoo.io")])) {
-	exit();
+    exit();
 }
 
 ini_set("date.timezone", "America/Toronto");
 $db = new PDO("sqlite:/www/fordstatus/database/database.sqlite");
 
 if (!empty($_GET['end']) && $_GET['end'] > 0) {
-	$end = (int) $_GET['end'];
+    $end = (int)$_GET['end'];
 } else {
-	$end = 'NULL';
+    $end = 'NULL';
 }
-$last_month = strtotime('last month');
+
+if (!empty($_GET['start']) && $_GET['start'] > 0) {
+    $start = date('\'Y-m-d\'', (int)$_GET['start']);
+} else {
+    $start = 'NULL';
+}
 
 $qry = "SELECT 
 			m.name,
@@ -23,7 +28,7 @@ $qry = "SELECT
 		 	metric_points p 
 		 	INNER JOIN metrics m ON m.id = p.metric_id
 		WHERE
-			p.created_at BETWEEN  COALESCE({$end}, date('now', '-1 month'))  AND COALESCE({$end}, date('now'))
+			p.created_at BETWEEN COALESCE({$start}, date('now', '-1 month'))  AND COALESCE({$end}, date('now'))
 	  	GROUP BY
 	  		m.name, m.suffix";
 
